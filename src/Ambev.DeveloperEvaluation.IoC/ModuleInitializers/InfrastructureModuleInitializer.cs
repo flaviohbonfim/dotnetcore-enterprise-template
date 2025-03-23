@@ -14,5 +14,10 @@ public class InfrastructureModuleInitializer : IModuleInitializer
     {
         builder.Services.AddScoped<DbContext>(provider => provider.GetRequiredService<DefaultContext>());
         builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddTransient<ISaleRepository, SaleRepository>();
+        builder.Services.AddTransient<IBranchRepository, BranchRepository>();
+        builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
+        builder.Services.AddTransient<IProductRepository, ProductRepository>();
+        builder.Services.AddTransient<ISaleItemRepository, SaleItemRepository>();
     }
 }
