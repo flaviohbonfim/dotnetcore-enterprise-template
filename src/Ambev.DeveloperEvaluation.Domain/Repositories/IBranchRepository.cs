@@ -1,9 +1,10 @@
 using Ambev.DeveloperEvaluation.Domain.Entities;
-namespace Ambev.DeveloperEvaluation.Domain.Repositories
+
+namespace Ambev.DeveloperEvaluation.Domain.Repositories;
+
+public interface IBranchRepository
 {
-    public interface IBranchRepository
-    {
-        Task<Branch> GetByIdAsync(Guid id, CancellationToken cancellationToken);
-        Task<Branch> CreateAsync(Branch branch, CancellationToken cancellationToken);
-    }
+    Task<Branch> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<List<Branch>> GetAllAsync(CancellationToken cancellationToken);
+    Task<Branch> CreateAsync(Branch branch, CancellationToken cancellationToken);
 }
