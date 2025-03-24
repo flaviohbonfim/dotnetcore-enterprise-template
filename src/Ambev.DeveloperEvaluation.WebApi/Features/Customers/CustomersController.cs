@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Ambev.DeveloperEvaluation.WebApi.Common;
 using Ambev.DeveloperEvaluation.Application.Customers.GetCustomer;
 using Ambev.DeveloperEvaluation.Application.Customers.GetCustomers;
@@ -9,6 +10,7 @@ using Ambev.DeveloperEvaluation.WebApi.Features.Customers.CreateCustomer;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Customers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class CustomersController : BaseController

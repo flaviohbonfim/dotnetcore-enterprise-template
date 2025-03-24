@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Ambev.DeveloperEvaluation.WebApi.Common;
 using Ambev.DeveloperEvaluation.Application.Products.GetProduct;
 using Ambev.DeveloperEvaluation.Application.Products.GetProducts;
@@ -9,6 +10,7 @@ using Ambev.DeveloperEvaluation.WebApi.Features.Products.CreateProduct;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Products;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ProductsController : BaseController
