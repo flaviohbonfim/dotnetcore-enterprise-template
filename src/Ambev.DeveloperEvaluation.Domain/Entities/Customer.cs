@@ -13,6 +13,11 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
+        /// Gets or sets the customer's document.
+        /// </summary>
+        public string Document { get; set; } = string.Empty;
+
+        /// <summary>
         /// Gets or sets the customer's email address.
         /// </summary>
         public string Email { get; set; } = string.Empty;
