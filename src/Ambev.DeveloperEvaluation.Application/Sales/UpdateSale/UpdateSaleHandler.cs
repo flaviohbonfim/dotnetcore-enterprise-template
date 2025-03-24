@@ -1,38 +1,41 @@
-using Ambev.DeveloperEvaluation.Domain.Entities;
-using Ambev.DeveloperEvaluation.Domain.Repositories;
 using AutoMapper;
 using MediatR;
+using FluentValidation;
+using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Ambev.DeveloperEvaluation.Domain.Entities;
 
-namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
+namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale;
+
+public class UpdateSaleHandler : IRequestHandler<UpdateSaleCommand, UpdateSaleResult>
 {
-    public class UpdateSaleHandler : IRequestHandler<UpdateSaleCommand, UpdateSaleResponse>
+    private readonly ISaleRepository _saleRepository;
+    private readonly IMapper _mapper;
+
+    public UpdateSaleHandler(ISaleRepository saleRepository, IMapper mapper)
     {
-        private readonly ISaleRepository _saleRepository;
-        private readonly IMapper _mapper;
+        _saleRepository = saleRepository;
+        _mapper = mapper;
+    }
 
-        public UpdateSaleHandler(ISaleRepository saleRepository, IMapper mapper)
-        {
-            _saleRepository = saleRepository;
-            _mapper = mapper;
-        }
+    public async Task<UpdateSaleResult> Handle(UpdateSaleCommand command, CancellationToken cancellationToken)
+    {
+        var validator = new UpdateSaleCommandValidator();
+        var validationResult = await validator.ValidateAsync(command, cancellationToken);
 
-        public async Task<UpdateSaleResponse> Handle(UpdateSaleCommand request, CancellationToken cancellationToken)
-        {
-            var sale = await _saleRepository.GetByIdAsync(request.SaleId, cancellationToken);
-            if (sale == null)
-            {
-                throw new Exception("Sale not found");
-            }
+        if (!validationResult.IsValid)
+            throw new ValidationException(validationResult.Errors);
 
-            // Atualiza os campos da venda
-            sale.SaleNumber = request.SaleNumber;
-            sale.SaleDate = request.SaleDate;
-            sale.TotalAmount = request.TotalAmount;
-            sale.Items = _mapper.Map<List<SaleItem>>(request.Items);
+        var sale = await _saleRepository.GetByIdAsync(command.SaleId, cancellationToken);
+        if (sale == null)
+            throw new InvalidOperationException($"Sale with ID {command.SaleId} not found");
 
-            await _saleRepository.UpdateAsync(sale, cancellationToken);
+        _mapper.Map(command, sale);
+        
+        // Calculate total amount
+        sale.TotalAmount = command.Items.Sum(item => (item.Quantity * item.UnitPrice) - item.Discount);
 
-            return _mapper.Map<UpdateSaleResponse>(sale);
-        }
+        var updatedSale = await _saleRepository.UpdateAsync(sale, cancellationToken);
+        
+        return _mapper.Map<UpdateSaleResult>(updatedSale);
     }
 }

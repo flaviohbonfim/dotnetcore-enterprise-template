@@ -1,36 +1,25 @@
-using Ambev.DeveloperEvaluation.Domain.Repositories;
 using MediatR;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using Ambev.DeveloperEvaluation.Domain.Repositories;
 
-namespace Ambev.DeveloperEvaluation.Application.Sales.DeleteSale
+namespace Ambev.DeveloperEvaluation.Application.Sales.DeleteSale;
+
+public class DeleteSaleHandler : IRequestHandler<DeleteSaleCommand, DeleteSaleResult>
 {
-    public class DeleteSaleHandler : IRequestHandler<DeleteSaleCommand, Unit>
+    private readonly ISaleRepository _saleRepository;
+
+    public DeleteSaleHandler(ISaleRepository saleRepository)
     {
-        private readonly ISaleRepository _saleRepository;
+        _saleRepository = saleRepository;
+    }
 
-        public DeleteSaleHandler(ISaleRepository saleRepository)
-        {
-            _saleRepository = saleRepository;
-        }
+    public async Task<DeleteSaleResult> Handle(DeleteSaleCommand command, CancellationToken cancellationToken)
+    {
+        var sale = await _saleRepository.GetByIdAsync(command.Id, cancellationToken);
+        if (sale == null)
+            throw new InvalidOperationException($"Sale with ID {command.Id} not found");
 
-        public async Task<Unit> Handle(DeleteSaleCommand request, CancellationToken cancellationToken)
-        {
-            // Obtém a venda no repositório
-            var sale = await _saleRepository.GetByIdAsync(request.SaleId, cancellationToken);
-            
-            if (sale == null)
-            {
-                // Lançar exceção ou retornar erro, dependendo da necessidade
-                throw new Exception("Sale not found");
-            }
+        await _saleRepository.DeleteAsync(sale.Id, cancellationToken);
 
-            // Exclui a venda
-            await _saleRepository.DeleteAsync(sale.Id, cancellationToken);
-
-            // Retorna Unit.Value, que é o valor para indicar sucesso sem retornar dados
-            return Unit.Value;
-        }
+        return new DeleteSaleResult { Success = true };
     }
 }

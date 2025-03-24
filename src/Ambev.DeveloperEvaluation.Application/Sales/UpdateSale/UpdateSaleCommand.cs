@@ -1,22 +1,21 @@
 using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
 using MediatR;
 
-namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
-{
-    public class UpdateSaleCommand : IRequest<UpdateSaleResponse>
-    {
-        public Guid SaleId { get; set; }
-        public string SaleNumber { get; set; }
-        public DateTime SaleDate { get; set; }
-        public decimal TotalAmount { get; set; }
-        public List<SaleItemDto> Items { get; set; }
-    }
+namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale;
 
-    public class UpdateSaleResponse
-    {
-        public Guid SaleId { get; set; }
-        public string SaleNumber { get; set; }
-        public DateTime SaleDate { get; set; }
-        public decimal TotalAmount { get; set; }
-    }
+public class UpdateSaleCommand : IRequest<UpdateSaleResult>
+{
+    public Guid SaleId { get; set; }
+    public string SaleNumber { get; set; } = string.Empty;
+    public DateTime SaleDate { get; set; }
+    public List<UpdateSaleItemCommand> Items { get; set; } = new();
+}
+
+public class UpdateSaleItemCommand
+{
+    public Guid? Id { get; set; }
+    public Guid ProductId { get; set; }
+    public int Quantity { get; set; }
+    public decimal UnitPrice { get; set; }
+    public decimal Discount { get; set; }
 }

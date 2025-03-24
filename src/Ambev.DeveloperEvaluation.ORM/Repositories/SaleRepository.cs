@@ -14,9 +14,15 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
         }
 
         // Método para criar uma nova venda
-        public async Task<Sale> CreateAsync(Sale sale, CancellationToken cancellationToken = default)
+        public async Task<Sale> CreateAsync(Sale sale, CancellationToken cancellationToken)
         {
-            await _context.Sales.AddAsync(sale, cancellationToken);
+            _context.Entry(sale).State = EntityState.Added;
+            
+            foreach (var item in sale.Items)
+            {
+                _context.Entry(item).State = EntityState.Added;
+            }
+
             await _context.SaveChangesAsync(cancellationToken);
             return sale;
         }
@@ -60,7 +66,7 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
         }
 
         // Método para atualizar a venda, se necessário
-        public async Task<Sale?> UpdateAsync(Sale sale, CancellationToken cancellationToken = default)
+        public async Task<Sale> UpdateAsync(Sale sale, CancellationToken cancellationToken)
         {
             _context.Sales.Update(sale);
             await _context.SaveChangesAsync(cancellationToken);
