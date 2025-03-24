@@ -1,14 +1,10 @@
 using Ambev.DeveloperEvaluation.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Ambev.DeveloperEvaluation.Domain.Repositories
+namespace Ambev.DeveloperEvaluation.Domain.Repositories;
+
+public interface IProductRepository
 {
-    public interface IProductRepository
-    {
-        Task<Product> GetByIdAsync(Guid id, CancellationToken cancellationToken);
-        Task<Product> CreateAsync(Product product, CancellationToken cancellationToken);
-    }
+    Task<Product> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<List<Product>> GetAllAsync(CancellationToken cancellationToken);
+    Task<Product> CreateAsync(Product product, CancellationToken cancellationToken);
 }
