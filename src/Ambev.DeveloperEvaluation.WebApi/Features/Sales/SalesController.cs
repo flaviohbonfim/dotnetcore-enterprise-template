@@ -11,6 +11,7 @@ using Ambev.DeveloperEvaluation.Application.Sales.CancelSale;
 using Ambev.DeveloperEvaluation.Application.Sales.CancelSaleItem;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.UpdateSale;
+using Confluent.Kafka;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales;
 
@@ -21,11 +22,25 @@ public class SalesController : BaseController
 {
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;
+    private readonly IProducer<string, string> _producer;
+    private const string TOPIC_NAME = "sales-events";
 
-    public SalesController(IMediator mediator, IMapper mapper)
+    public SalesController(IMediator mediator, IMapper mapper, IProducer<string, string> producer)
     {
         _mediator = mediator;
         _mapper = mapper;
+        _producer = producer;
+    }
+
+    private async Task PublishEvent(string eventType, object data)
+    {
+        var message = new Message<string, string>
+        {
+            Key = Guid.NewGuid().ToString(),
+            Value = System.Text.Json.JsonSerializer.Serialize(new { Type = eventType, Data = data })
+        };
+
+        await _producer.ProduceAsync(TOPIC_NAME, message);
     }
 
     /// <summary>
@@ -44,6 +59,8 @@ public class SalesController : BaseController
 
         var command = _mapper.Map<CreateSaleCommand>(request);
         var response = await _mediator.Send(command, cancellationToken);
+
+        await PublishEvent("SaleCreated", response);
 
         return Created(string.Empty, new ApiResponseWithData<CreateSaleResult>
         {
@@ -91,6 +108,8 @@ public class SalesController : BaseController
         command.SaleId = id;
         var response = await _mediator.Send(command, cancellationToken);
 
+        await PublishEvent("SaleModified", response);
+
         return Ok(new ApiResponseWithData<UpdateSaleResult>
         {
             Success = true,
@@ -129,6 +148,8 @@ public class SalesController : BaseController
         var command = new CancelSaleCommand { Id = id };
         var response = await _mediator.Send(command, cancellationToken);
 
+        await PublishEvent("SaleCancelled", response);
+
         return Ok(new ApiResponseWithData<CancelSaleResult>
         {
             Success = true,
@@ -151,6 +172,8 @@ public class SalesController : BaseController
             ItemId = itemId
         };
         var response = await _mediator.Send(command, cancellationToken);
+
+        await PublishEvent("ItemCancelled", response);
 
         return Ok(new ApiResponseWithData<CancelSaleItemResult>
         {

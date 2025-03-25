@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Models;
+using Confluent.Kafka;
 
 namespace Ambev.DeveloperEvaluation.WebApi;
 
@@ -32,13 +33,22 @@ public class Program
                     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                 });
 
+            builder.Services.AddSingleton<IProducer<string, string>>(sp =>
+            {
+            var config = new ProducerConfig
+            {
+                BootstrapServers = builder.Configuration["Kafka:BootstrapServers"]
+            };
+            return new ProducerBuilder<string, string>(config).Build();
+            });
+
             builder.Services.AddEndpointsApiExplorer();
 
             builder.AddBasicHealthChecks();
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Ambev Developer Evaluation API", Version = "v1" });
-                
+
                 // Add JWT Authentication support to Swagger
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
