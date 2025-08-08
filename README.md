@@ -15,7 +15,7 @@
 2. Wait for the services to start.  
 3. Run migrations to ensure the database is up to date:  
    ```bash
-   dotnet ef database update --project src/Ambev.DeveloperEvaluation.WebApi
+   dotnet ef database update --project src/DotNetCore.EnterpriseTemplate.WebApi
    ```  
 
 The API will be available at:  
@@ -23,11 +23,11 @@ The API will be available at:
 - HTTPS: [https://localhost:8081/swagger](https://localhost:8081/swagger)  
 
 ### Using Visual Studio 2022  
-1. Open `Ambev.DeveloperEvaluation.sln`  
-2. Set `Ambev.DeveloperEvaluation.WebApi` as the startup project  
+1. Open `DotNetCore.EnterpriseTemplate.sln`  
+2. Set `DotNetCore.EnterpriseTemplate.WebApi` as the startup project  
 3. Run migrations:  
    ```bash
-   dotnet ef database update --project src/Ambev.DeveloperEvaluation.WebApi
+   dotnet ef database update --project src/DotNetCore.EnterpriseTemplate.WebApi
    ```  
 4. Press `F5` or click the "Run" button  
 
@@ -38,11 +38,11 @@ The API will be available at:
 ### Using .NET CLI  
 1. Navigate to the WebAPI project directory:  
    ```bash
-   cd src/Ambev.DeveloperEvaluation.WebApi
+   cd src/DotNetCore.EnterpriseTemplate.WebApi
    ```
 2. Run migrations:  
    ```bash
-   dotnet ef database update --project ../Ambev.DeveloperEvaluation.WebApi
+   dotnet ef database update --project ../DotNetCore.EnterpriseTemplate.WebApi
    ```  
 3. Start the project:  
    ```bash
@@ -50,11 +50,11 @@ The API will be available at:
    ```  
 
 ## Project Structure  
-- `src/Ambev.DeveloperEvaluation.WebApi` : Main API project  
-- `src/Ambev.DeveloperEvaluation.Application` : Application logic  
-- `src/Ambev.DeveloperEvaluation.Domain` : Domain models and interfaces  
-- `src/Ambev.DeveloperEvaluation.IoC` : Dependency injection configuration  
-- `src/Ambev.DeveloperEvaluation.ORM` : Database access layer  
+- `src/DotNetCore.EnterpriseTemplate.WebApi` : Main API project  
+- `src/DotNetCore.EnterpriseTemplate.Application` : Application logic  
+- `src/DotNetCore.EnterpriseTemplate.Domain` : Domain models and interfaces  
+- `src/DotNetCore.EnterpriseTemplate.IoC` : Dependency injection configuration  
+- `src/DotNetCore.EnterpriseTemplate.ORM` : Database access layer  
 
 ## Dependencies  
 The project uses the following services (automatically configured in Docker):  

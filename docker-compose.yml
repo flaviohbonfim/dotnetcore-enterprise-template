@@ -1,5 +1,5 @@
 services:
-  ambev.developerevaluation.webapi:
+  DotNetCore.EnterpriseTemplate.webapi:
     container_name: ambev_developer_evaluation_webapi
     image: ${DOCKER_REGISTRY-}ambevdeveloperevaluationwebapi
     build:
@@ -14,15 +14,15 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
-      - ConnectionStrings__DefaultConnection=Server=ambev.developerevaluation.database;Port=5432;Database=developer_evaluation;User Id=developer;Password=ev@luAt10n
-      - Kafka__BootstrapServers=ambev.developerevaluation.kafka:9092
+      - ConnectionStrings__DefaultConnection=Server=DotNetCore.EnterpriseTemplate.database;Port=5432;Database=developer_evaluation;User Id=developer;Password=ev@luAt10n
+      - Kafka__BootstrapServers=DotNetCore.EnterpriseTemplate.kafka:9092
     depends_on:
-      ambev.developerevaluation.database:
+      DotNetCore.EnterpriseTemplate.database:
         condition: service_healthy
-      ambev.developerevaluation.kafka:
+      DotNetCore.EnterpriseTemplate.kafka:
         condition: service_healthy
 
-  ambev.developerevaluation.database:
+  DotNetCore.EnterpriseTemplate.database:
     container_name: ambev_developer_evaluation_database
     image: postgres:latest
     environment:
@@ -39,7 +39,7 @@ services:
       timeout: 5s
       retries: 5
 
-  ambev.developerevaluation.kafka:
+  DotNetCore.EnterpriseTemplate.kafka:
     container_name: ambev_developer_evaluation_kafka
     image: confluentinc/cp-kafka:latest
     ports:
@@ -48,17 +48,17 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_NODE_ID: 1
-      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@ambev.developerevaluation.kafka:9093'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@DotNetCore.EnterpriseTemplate.kafka:9093'
       KAFKA_PROCESS_ROLES: 'broker,controller'
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
       KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093'
-      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://ambev.developerevaluation.kafka:9092'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://DotNetCore.EnterpriseTemplate.kafka:9092'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT'
       KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       CLUSTER_ID: 'KafkaCluster1'
     healthcheck:
-      test: ["CMD-SHELL", "kafka-topics --bootstrap-server ambev.developerevaluation.kafka:9092 --list"]
+      test: ["CMD-SHELL", "kafka-topics --bootstrap-server DotNetCore.EnterpriseTemplate.kafka:9092 --list"]
       interval: 30s
       timeout: 10s
       retries: 5
