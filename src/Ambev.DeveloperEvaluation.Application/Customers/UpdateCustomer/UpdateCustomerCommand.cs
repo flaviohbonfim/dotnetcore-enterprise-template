@@ -1,6 +1,8 @@
-namespace Ambev.DeveloperEvaluation.Application.Customers.CreateCustomer;
+using MediatR;
 
-public class CreateCustomerResult
+namespace Ambev.DeveloperEvaluation.Application.Customers.UpdateCustomer;
+
+public class UpdateCustomerCommand : IRequest<UpdateCustomerResult>
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

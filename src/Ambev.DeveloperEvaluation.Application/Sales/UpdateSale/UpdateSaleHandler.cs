@@ -9,11 +9,16 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale;
 public class UpdateSaleHandler : IRequestHandler<UpdateSaleCommand, UpdateSaleResult>
 {
     private readonly ISaleRepository _saleRepository;
+    private readonly IProductRepository _productRepository;
     private readonly IMapper _mapper;
 
-    public UpdateSaleHandler(ISaleRepository saleRepository, IMapper mapper)
+    public UpdateSaleHandler(
+        ISaleRepository saleRepository,
+        IProductRepository productRepository,
+        IMapper mapper)
     {
         _saleRepository = saleRepository;
+        _productRepository = productRepository;
         _mapper = mapper;
     }
 
@@ -28,6 +33,18 @@ public class UpdateSaleHandler : IRequestHandler<UpdateSaleCommand, UpdateSaleRe
         var sale = await _saleRepository.GetByIdAsync(command.SaleId, cancellationToken);
         if (sale == null)
             throw new InvalidOperationException($"Sale with ID {command.SaleId} not found");
+
+        var existingSaleWithNumber = await _saleRepository.GetBySaleNumberAsync(command.SaleNumber, cancellationToken);
+        if (existingSaleWithNumber != null && existingSaleWithNumber.Id != command.SaleId)
+            throw new InvalidOperationException($"Sale number {command.SaleNumber} is already in use");
+
+        // Validate products exist
+        foreach (var item in command.Items)
+        {
+            var product = await _productRepository.GetByIdAsync(item.ProductId, cancellationToken);
+            if (product == null)
+                throw new InvalidOperationException($"Product with ID {item.ProductId} not found");
+        }
 
         _mapper.Map(command, sale);
         

@@ -3,6 +3,7 @@ using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.Application.Sales.CancelSale;
+using Ambev.DeveloperEvaluation.Application.Sales.DeleteSale;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Mappings;
 
@@ -39,5 +40,8 @@ public class CreateSaleProfile : Profile
                 src.Product != null ? src.Product.Name : string.Empty));
 
         CreateMap<Sale, CancelSaleResult>();
+
+        CreateMap<Sale, DeleteSaleResult>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
     }
 }

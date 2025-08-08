@@ -32,4 +32,17 @@ public class CustomerRepository : ICustomerRepository
         await _context.SaveChangesAsync(cancellationToken);
         return customer;
     }
+
+    public async Task<Customer> UpdateAsync(Customer customer, CancellationToken cancellationToken)
+    {
+        _context.Customers.Update(customer);
+        await _context.SaveChangesAsync(cancellationToken);
+        return customer;
+    }
+
+    public async Task<Customer> GetByEmailAsync(string email, CancellationToken cancellationToken)
+    {
+        return await _context.Customers
+            .FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
+    }
 }

@@ -1,6 +1,6 @@
-namespace Ambev.DeveloperEvaluation.Application.Customers.CreateCustomer;
+namespace Ambev.DeveloperEvaluation.Application.Customers.UpdateCustomer;
 
-public class CreateCustomerResult
+public class UpdateCustomerResult
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

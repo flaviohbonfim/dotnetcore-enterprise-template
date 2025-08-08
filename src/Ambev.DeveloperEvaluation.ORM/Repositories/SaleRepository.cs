@@ -59,8 +59,9 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
         {
             var sale = await GetByIdAsync(id, cancellationToken);
             if (sale == null) return false;
+            sale.IsActive = false;
 
-            _context.Sales.Remove(sale);
+            _context.Sales.Update(sale);
             await _context.SaveChangesAsync(cancellationToken);
             return true;
         }
